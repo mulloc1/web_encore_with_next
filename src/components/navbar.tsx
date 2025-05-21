@@ -1,26 +1,26 @@
-"use client"
-import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { useEffect, useState } from "react"
+"use client";
+import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // 스크롤 이벤트 감지
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
-        setIsScrolled(true)
+        setIsScrolled(true);
       } else {
-        setIsScrolled(false)
+        setIsScrolled(false);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <header
@@ -30,14 +30,17 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-xl font-bold text-[#111] dark:text-white font-heading tracking-tight">
+          <Link
+            href="/"
+            className="text-xl font-bold text-[#111] dark:text-white font-heading tracking-tight"
+          >
             ENCORE
           </Link>
 
           <div className="flex items-center space-x-2 sm:space-x-4">
             <ThemeToggle />
 
-            <Link
+            {/* <Link
               href="/login"
               className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium bg-emerald-700 text-white dark:bg-[#a7d7c5] dark:text-gray-900 rounded-md hover:bg-emerald-600 dark:hover:bg-[#8fcbb6] transition-colors shadow-sm"
             >
@@ -49,10 +52,10 @@ export default function Navbar() {
               className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm"
             >
               회원가입
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
     </header>
-  )
+  );
 }
