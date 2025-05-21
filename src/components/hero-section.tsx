@@ -1,14 +1,37 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { ChevronDown, Music, MapPin, ChevronRight, HelpCircle, Check } from "lucide-react"
-import Image from "next/image"
-import { createPortal } from "react-dom"
+import { useState, useRef, useEffect } from "react";
+import {
+  ChevronDown,
+  Music,
+  MapPin,
+  ChevronRight,
+  HelpCircle,
+  Check,
+} from "lucide-react";
+import Image from "next/image";
+import { createPortal } from "react-dom";
 
 // 전공 데이터
 const majorCategories = {
-  건반악기: ["피아노", "오르간", "하프시코드", "첼레스타", "재즈피아노", "실용건반"],
-  현악기: ["바이올린", "비올라", "첼로", "더블베이스", "하프", "기타", "일렉기타", "만돌린"],
+  건반악기: [
+    "피아노",
+    "오르간",
+    "하프시코드",
+    "첼레스타",
+    "재즈피아노",
+    "실용건반",
+  ],
+  현악기: [
+    "바이올린",
+    "비올라",
+    "첼로",
+    "더블베이스",
+    "하프",
+    "기타",
+    "일렉기타",
+    "만돌린",
+  ],
   목관악기: [
     "플룻",
     "피콜로",
@@ -24,7 +47,15 @@ const majorCategories = {
     "바리톤색소폰",
     "리코더",
   ],
-  금관악기: ["트럼펫", "코넷", "호른", "트롬본", "베이스트롬본", "튜바", "유포니움"],
+  금관악기: [
+    "트럼펫",
+    "코넷",
+    "호른",
+    "트롬본",
+    "베이스트롬본",
+    "튜바",
+    "유포니움",
+  ],
   타악기: [
     "팀파니",
     "타악기",
@@ -39,9 +70,31 @@ const majorCategories = {
     "탬버린",
     "트라이앵글",
   ],
-  성악: ["성악", "소프라노", "메조소프라노", "알토", "테너", "바리톤", "하이바리톤", "베이스", "합창"],
-  기타: ["지휘", "작곡", "클래식작곡", "실용음악", "국악", "국악(민요)", "가야금", "해금", "무용", "미술", "교육"],
-}
+  성악: [
+    "성악",
+    "소프라노",
+    "메조소프라노",
+    "알토",
+    "테너",
+    "바리톤",
+    "하이바리톤",
+    "베이스",
+    "합창",
+  ],
+  기타: [
+    "지휘",
+    "작곡",
+    "클래식작곡",
+    "실용음악",
+    "국악",
+    "국악(민요)",
+    "가야금",
+    "해금",
+    "무용",
+    "미술",
+    "교육",
+  ],
+};
 
 // 지역 데이터
 const locationData = [
@@ -98,11 +151,32 @@ const locationData = [
   },
   {
     sd: "대구",
-    sgg: ["군위군", "남구", "달서구", "달성군", "동구", "북구", "서구", "수성구", "중구"],
+    sgg: [
+      "군위군",
+      "남구",
+      "달서구",
+      "달성군",
+      "동구",
+      "북구",
+      "서구",
+      "수성구",
+      "중구",
+    ],
   },
   {
     sd: "인천",
-    sgg: ["강화군", "계양구", "남동구", "동구", "미추홀구", "부평구", "서구", "연수구", "옹진군", "중구"],
+    sgg: [
+      "강화군",
+      "계양구",
+      "남동구",
+      "동구",
+      "미추홀구",
+      "부평구",
+      "서구",
+      "연수구",
+      "옹진군",
+      "중구",
+    ],
   },
   {
     sd: "광주",
@@ -337,120 +411,134 @@ const locationData = [
     sd: "제주",
     sgg: ["서귀포시", "제주시"],
   },
-]
+];
 
 export default function HeroSection() {
-  const [activeDropdown, setActiveDropdown] = useState<"major" | "location" | "help" | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [mounted, setMounted] = useState(false)
+  const [activeDropdown, setActiveDropdown] = useState<
+    "major" | "location" | "help" | null
+  >(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   // 선택된 필터 상태 관리
-  const [selectedMajors, setSelectedMajors] = useState<string[]>([])
-  const [selectedLocations, setSelectedLocations] = useState<{ region: string; district: string }[]>([])
+  const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<
+    { region: string; district: string }[]
+  >([]);
 
   // 버튼 위치 참조
-  const majorButtonRef = useRef<HTMLButtonElement>(null)
-  const locationButtonRef = useRef<HTMLButtonElement>(null)
-  const helpButtonRef = useRef<HTMLButtonElement>(null)
+  const majorButtonRef = useRef<HTMLButtonElement>(null);
+  const locationButtonRef = useRef<HTMLButtonElement>(null);
+  const helpButtonRef = useRef<HTMLButtonElement>(null);
 
   // 버튼 위치 상태
-  const [majorButtonRect, setMajorButtonRect] = useState<DOMRect | null>(null)
-  const [locationButtonRect, setLocationButtonRect] = useState<DOMRect | null>(null)
-  const [helpButtonRect, setHelpButtonRect] = useState<DOMRect | null>(null)
+  const [majorButtonRect, setMajorButtonRect] = useState<DOMRect | null>(null);
+  const [locationButtonRect, setLocationButtonRect] = useState<DOMRect | null>(
+    null
+  );
+  const [helpButtonRect, setHelpButtonRect] = useState<DOMRect | null>(null);
 
   // 마운트 상태 업데이트
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   // 버튼 위치 업데이트
   useEffect(() => {
     const updateButtonRects = () => {
       if (majorButtonRef.current) {
-        setMajorButtonRect(majorButtonRef.current.getBoundingClientRect())
+        setMajorButtonRect(majorButtonRef.current.getBoundingClientRect());
       }
 
       if (locationButtonRef.current) {
-        setLocationButtonRect(locationButtonRef.current.getBoundingClientRect())
+        setLocationButtonRect(
+          locationButtonRef.current.getBoundingClientRect()
+        );
       }
 
       if (helpButtonRef.current) {
-        setHelpButtonRect(helpButtonRef.current.getBoundingClientRect())
+        setHelpButtonRect(helpButtonRef.current.getBoundingClientRect());
       }
-    }
+    };
 
-    updateButtonRects()
+    updateButtonRects();
 
     // 스크롤 이벤트 리스너 추가
-    window.addEventListener("scroll", updateButtonRects)
-    window.addEventListener("resize", updateButtonRects)
+    window.addEventListener("scroll", updateButtonRects);
+    window.addEventListener("resize", updateButtonRects);
 
     return () => {
-      window.removeEventListener("scroll", updateButtonRects)
-      window.removeEventListener("resize", updateButtonRects)
-    }
-  }, [])
+      window.removeEventListener("scroll", updateButtonRects);
+      window.removeEventListener("resize", updateButtonRects);
+    };
+  }, []);
 
   // 드롭다운 토글 함수
   const toggleDropdown = (dropdown: "major" | "location" | "help") => {
     if (activeDropdown === dropdown) {
-      setActiveDropdown(null)
-      setSelectedCategory(null)
-      setSelectedRegion(null)
+      setActiveDropdown(null);
+      setSelectedCategory(null);
+      setSelectedRegion(null);
     } else {
-      setActiveDropdown(dropdown)
-      setSelectedCategory(null)
-      setSelectedRegion(null)
+      setActiveDropdown(dropdown);
+      setSelectedCategory(null);
+      setSelectedRegion(null);
     }
-  }
+  };
 
   // 전공 선택 함수
   const handleMajorSelect = (major: string) => {
     if (selectedMajors.includes(major)) {
-      setSelectedMajors(selectedMajors.filter((item) => item !== major))
+      setSelectedMajors(selectedMajors.filter((item) => item !== major));
     } else {
-      setSelectedMajors([...selectedMajors, major])
+      setSelectedMajors([...selectedMajors, major]);
     }
-  }
+  };
 
   // 지역 선택 함수
   const handleLocationSelect = (region: string, district: string) => {
-    const existingLocation = selectedLocations.find((loc) => loc.region === region && loc.district === district)
+    const existingLocation = selectedLocations.find(
+      (loc) => loc.region === region && loc.district === district
+    );
 
     if (existingLocation) {
-      setSelectedLocations(selectedLocations.filter((loc) => !(loc.region === region && loc.district === district)))
+      setSelectedLocations(
+        selectedLocations.filter(
+          (loc) => !(loc.region === region && loc.district === district)
+        )
+      );
     } else {
-      setSelectedLocations([...selectedLocations, { region, district }])
+      setSelectedLocations([...selectedLocations, { region, district }]);
     }
-  }
+  };
 
   // 필터 적용 함수
   const applyFilters = () => {
-    console.log("선택된 전공:", selectedMajors)
-    console.log("선택된 지역:", selectedLocations)
-    setActiveDropdown(null)
+    console.log("선택된 전공:", selectedMajors);
+    console.log("선택된 지역:", selectedLocations);
+    setActiveDropdown(null);
     // 여기에 필터 적용 로직 추가
-  }
+  };
 
   // 드롭다운 렌더링 함수
   const renderDropdown = () => {
-    if (!mounted) return null
+    if (!mounted) return null;
 
-    let dropdownContent = null
-    let buttonRect = null
-    const dropdownWidth = 240 // 기본 드롭다운 너비
+    let dropdownContent = null;
+    let buttonRect = null;
+    const dropdownWidth = 240; // 기본 드롭다운 너비
 
     if (activeDropdown === "major") {
-      buttonRect = majorButtonRect
+      buttonRect = majorButtonRect;
       dropdownContent = selectedCategory ? (
         <>
           <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 dark:border-gray-700">
             <button
               className="flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               onClick={(e) => {
-                e.stopPropagation()
-                setSelectedCategory(null)
+                e.stopPropagation();
+                setSelectedCategory(null);
               }}
             >
               <ChevronDown className="rotate-90 h-4 w-4 mr-1" />
@@ -459,17 +547,21 @@ export default function HeroSection() {
             <span className="text-sm font-medium">{selectedCategory}</span>
           </div>
           <div className="max-h-60 overflow-y-auto py-1">
-            {majorCategories[selectedCategory as keyof typeof majorCategories].map((item) => (
+            {majorCategories[
+              selectedCategory as keyof typeof majorCategories
+            ].map((item) => (
               <button
                 key={item}
                 className="flex justify-between items-center w-full text-left px-4 py-2.5 text-sm hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors text-gray-900 dark:text-gray-100"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  handleMajorSelect(item)
+                  e.stopPropagation();
+                  handleMajorSelect(item);
                 }}
               >
                 <span>{item}</span>
-                {selectedMajors.includes(item) && <Check className="h-4 w-4 text-emerald-700 dark:text-[#a7d7c5]" />}
+                {selectedMajors.includes(item) && (
+                  <Check className="h-4 w-4 text-emerald-700 dark:text-[#a7d7c5]" />
+                )}
               </button>
             ))}
           </div>
@@ -489,8 +581,8 @@ export default function HeroSection() {
               key={category}
               className="flex justify-between items-center w-full text-left px-4 py-2.5 text-sm hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors text-gray-900 dark:text-gray-100"
               onClick={(e) => {
-                e.stopPropagation()
-                setSelectedCategory(category)
+                e.stopPropagation();
+                setSelectedCategory(category);
               }}
             >
               {category}
@@ -498,17 +590,17 @@ export default function HeroSection() {
             </button>
           ))}
         </div>
-      )
+      );
     } else if (activeDropdown === "location") {
-      buttonRect = locationButtonRect
+      buttonRect = locationButtonRect;
       dropdownContent = selectedRegion ? (
         <>
           <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 dark:border-gray-700">
             <button
               className="flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               onClick={(e) => {
-                e.stopPropagation()
-                setSelectedRegion(null)
+                e.stopPropagation();
+                setSelectedRegion(null);
               }}
             >
               <ChevronDown className="rotate-90 h-4 w-4 mr-1" />
@@ -524,12 +616,15 @@ export default function HeroSection() {
                   key={district}
                   className="flex justify-between items-center w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-gray-900 dark:text-gray-100"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleLocationSelect(selectedRegion, district)
+                    e.stopPropagation();
+                    handleLocationSelect(selectedRegion, district);
                   }}
                 >
                   <span>{district}</span>
-                  {selectedLocations.some((loc) => loc.region === selectedRegion && loc.district === district) && (
+                  {selectedLocations.some(
+                    (loc) =>
+                      loc.region === selectedRegion && loc.district === district
+                  ) && (
                     <Check className="h-4 w-4 text-emerald-700 dark:text-[#a7d7c5]" />
                   )}
                 </button>
@@ -551,8 +646,8 @@ export default function HeroSection() {
               key={region.sd}
               className="flex justify-between items-center w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-gray-900 dark:text-gray-100"
               onClick={(e) => {
-                e.stopPropagation()
-                setSelectedRegion(region.sd)
+                e.stopPropagation();
+                setSelectedRegion(region.sd);
               }}
             >
               {region.sd}
@@ -560,31 +655,34 @@ export default function HeroSection() {
             </button>
           ))}
         </div>
-      )
+      );
     } else if (activeDropdown === "help") {
-      buttonRect = helpButtonRect
+      buttonRect = helpButtonRect;
       dropdownContent = (
         <div className="p-4">
-          <h3 className="font-bold text-gray-900 dark:text-white mb-2">ENCORE란?</h3>
+          <h3 className="font-bold text-gray-900 dark:text-white mb-2">
+            ENCORE란?
+          </h3>
           <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-            ENCORE는 음악인들을 위한 구인구직 플랫폼입니다. 전국의 음악 관련 일자리를 한 곳에서 찾아보고 지원할 수
-            있습니다.
+            ENCORE는 음악인들을 위한 구인구직 플랫폼입니다. 전국의 음악 관련
+            일자리를 한 곳에서 찾아보고 지원할 수 있습니다.
           </p>
           <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium">앙코르 (ENCORE)</span>는 공연 후 관객의 환호에 답하는 추가 연주를 의미합니다.
-            저희는 모든 음악인이 무대 밖에서도 지속 가능한 음악 활동을 할 수 있도록 돕고자 합니다.
+            <span className="font-medium">앙코르 (ENCORE)</span>는 공연 후
+            관객의 환호에 답하는 추가 연주를 의미합니다. 저희는 모든 음악인이
+            무대 밖에서도 지속 가능한 음악 활동을 할 수 있도록 돕고자 합니다.
           </p>
         </div>
-      )
+      );
     }
 
-    if (!dropdownContent || !buttonRect) return null
+    if (!dropdownContent || !buttonRect) return null;
 
     // 모바일에서 드롭다운이 화면 밖으로 나가지 않도록 위치 조정
-    const isMobile = window.innerWidth < 640
+    const isMobile = window.innerWidth < 640;
     const leftPosition = isMobile
       ? Math.min(buttonRect.left, window.innerWidth - dropdownWidth - 16) // 16px는 여백
-      : buttonRect.left
+      : buttonRect.left;
 
     // 드롭다운 위치 계산
     const dropdownStyle = {
@@ -594,17 +692,21 @@ export default function HeroSection() {
       width: `${Math.min(buttonRect.width, dropdownWidth)}px`,
       maxWidth: `${window.innerWidth - 32}px`, // 화면 양쪽에 16px 여백
       zIndex: 9999,
-    }
+    };
 
     return createPortal(
-      <div style={dropdownStyle} onClick={(e) => e.stopPropagation()} className="animate-in fade-in duration-200">
+      <div
+        style={dropdownStyle}
+        onClick={(e) => e.stopPropagation()}
+        className="animate-in fade-in duration-200"
+      >
         <div className="mt-2 bg-white dark:bg-gray-800 border border-[#e0e0e0] dark:border-gray-700 rounded-md shadow-lg w-full">
           {dropdownContent}
         </div>
       </div>,
-      document.body,
-    )
-  }
+      document.body
+    );
+  };
 
   // 외부 클릭 감지
   useEffect(() => {
@@ -618,17 +720,17 @@ export default function HeroSection() {
         helpButtonRef.current &&
         !helpButtonRef.current.contains(event.target as Node)
       ) {
-        setActiveDropdown(null)
-        setSelectedCategory(null)
-        setSelectedRegion(null)
+        setActiveDropdown(null);
+        setSelectedCategory(null);
+        setSelectedRegion(null);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [activeDropdown])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [activeDropdown]);
 
   return (
     <div className="relative">
@@ -674,7 +776,8 @@ export default function HeroSection() {
                 className="flex items-center justify-center w-full sm:w-auto px-5 py-2.5 rounded-md bg-emerald-700 dark:bg-[#a7d7c5] text-white dark:text-black font-bold hover:bg-emerald-600 dark:hover:bg-[#8fcbb6] transition-colors shadow-md font-heading text-sm sm:text-base"
               >
                 <Music className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                전공 선택 <ChevronDown className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
+                전공 선택{" "}
+                <ChevronDown className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
 
@@ -686,11 +789,12 @@ export default function HeroSection() {
                 className="flex items-center justify-center w-full sm:w-auto px-5 py-2.5 rounded-md bg-white/90 text-gray-900 font-bold hover:bg-white transition-colors shadow-md font-heading text-sm sm:text-base"
               >
                 <MapPin className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                지역 선택 <ChevronDown className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
+                지역 선택{" "}
+                <ChevronDown className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
 
-            {/* ENCORE? 버튼 */}
+            {/* ENCORE? 버튼
             <div className="relative">
               <button
                 ref={helpButtonRef}
@@ -700,7 +804,7 @@ export default function HeroSection() {
                 <HelpCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 ENCORE?
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -712,5 +816,5 @@ export default function HeroSection() {
       <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-emerald-700/20 rounded-full blur-3xl"></div>
       <div className="absolute -top-16 -right-16 w-64 h-64 bg-emerald-700/20 rounded-full blur-3xl"></div>
     </div>
-  )
+  );
 }
