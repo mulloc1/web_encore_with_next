@@ -68,11 +68,21 @@ export default function JobGrid() {
           variant="outline"
           size="lg"
           onClick={() => {
+            setPage(page - 1); // 그 다음 페이지 값 증가
+            console.log(page); // 현재 페이지 값 먼저 출력
+          }}
+        >
+          이전
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => {
             setPage(page + 1); // 그 다음 페이지 값 증가
             console.log(page); // 현재 페이지 값 먼저 출력
           }}
         >
-          더 불러오기
+          다음
         </Button>
       </div>
     </div>

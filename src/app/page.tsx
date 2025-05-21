@@ -1,9 +1,9 @@
-import JobGrid from "@/components/job-grid"
-import FilterTags from "@/components/filter-tags"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
-import SurveyButton from "@/components/survey-button"
-import HeroSection from "@/components/hero-section"
+import JobGrid from "@/components/job-grid";
+import FilterTags from "@/components/filter-tags";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import SurveyButton from "@/components/survey-button";
+import HeroSection from "@/components/hero-section";
 
 export default function Home() {
   return (
@@ -11,11 +11,11 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <FilterTags />
+        {/* <FilterTags /> */}
         <JobGrid />
       </main>
       <Footer />
       <SurveyButton />
     </div>
-  )
+  );
 }
