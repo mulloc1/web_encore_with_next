@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss"
-const animate = require("tailwindcss-animate")
+import type { Config } from "tailwindcss";
+const animate = require("tailwindcss-animate");
 
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -46,11 +46,6 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         /* Existing colors that are not part of shadcn/ui */
-        primary: "#111111",
-        accent: {
-          ivory: "#f9f6f2",
-          green: "#d1e7dd",
-        },
         chart: {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",
@@ -103,5 +98,5 @@ const config: Config = {
     },
   },
   plugins: [animate],
-}
-export default config
+};
+export default config;
