@@ -20,7 +20,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "supabase/functions-js/*": ["./supabase/functions/*"]
     }
   },
   "include": [
