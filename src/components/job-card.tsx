@@ -38,7 +38,10 @@ export default function JobCard({
   };
 
   return (
-    <div className="card-emerald flex flex-col h-full transform hover:scale-105 hover:-translate-y-1 cursor-pointer relative animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div
+      key={id} // 각 JobCard 컴포넌트에 고유한 key prop 추가
+      className="card-emerald flex flex-col h-full transform hover:scale-105 hover:-translate-y-1 cursor-pointer relative animate-in fade-in slide-in-from-bottom-4 duration-500"
+    >
       {isSubstitude && (
         <div className="absolute -top-1 right-4 px-3 py-1 rounded-b-lg bg-emerald-700 dark:bg-[#a7d7c5] flex items-center justify-center text-xs font-bold text-white dark:text-black shadow-md">
           {isSubstitude ? "대타" : "한 번 연주"}

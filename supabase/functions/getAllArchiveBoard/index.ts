@@ -12,9 +12,11 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", {
       headers: {
-        "Access-Control-Allow-Origin": "*", // 개발 환경 모든 출처 허용, 운영 환경에서는 특정 출처만 허용
+        "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_ORIGIN") ||
+          "*", // 개발 환경 모든 출처 허용, 운영 환경에서는 특정 출처만 허용
         "Access-Control-Allow-Methods": "GET, OPTIONS", // 허용된 메서드
-        "Access-Control-Allow-Headers": "x-client-info, apikey",
+        "Access-Control-Allow-Headers": "x-client-info, apikey, Authorization",
+        "Content-Type": "application/json",
       },
     });
   }
@@ -39,20 +41,32 @@ Deno.serve(async (req) => {
 
     const { data, error } = await supabaseClient.from("archiveBoard").select(
       "*",
-    )
+    ).order("createdAt", { ascending: false })
       .range(page * 8, ((page + 1) * 8) - 1);
 
     console.log(data);
 
     return new Response(
       JSON.stringify(data),
-      { headers: { "Content-Type": "application/json" } },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_ORIGIN") ||
+            "*",
+        },
+      },
     );
   } catch (error) {
     console.error("데이터 불러오기 오류:", error);
     return new Response(
       JSON.stringify({ error: "데이터를 불러오는데 실패했습니다" }),
-      { headers: { "Content-Type": "application/json" } },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_ORIGIN") ||
+            "*",
+        },
+      },
     );
   }
 });

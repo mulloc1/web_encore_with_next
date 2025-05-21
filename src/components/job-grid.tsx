@@ -52,15 +52,15 @@ export default function JobGrid() {
   useEffect(() => {
     fetchJobs({ page }).then((jobs) => {
       console.log(jobs);
-      setJobs((prev) => [...prev, ...jobs]);
+      setJobs((_) => [...jobs]);
     });
   }, [page]);
 
   return (
     <div>
-      <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-8">
         {jobs.map((job) => (
-          <JobCard {...job} />
+          <JobCard key={job.id} {...job} />
         ))}
       </div>
       <div className="flex justify-center mt-8">
