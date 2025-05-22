@@ -9,7 +9,6 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       <Navbar />
       <Board />
-
       <Footer />
       <SurveyButton />
     </div>

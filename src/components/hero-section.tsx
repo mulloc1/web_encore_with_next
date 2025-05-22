@@ -413,8 +413,10 @@ const locationData = [
 ];
 
 export default function HeroSection({
+  filter,
   setFilter,
 }: {
+  filter: Filter;
   setFilter: (filter: Filter) => void;
 }) {
   const [activeDropdown, setActiveDropdown] = useState<
@@ -425,10 +427,14 @@ export default function HeroSection({
   const [mounted, setMounted] = useState(false);
 
   // 선택된 필터 상태 관리
-  const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
-  const [selectedLocations, setSelectedLocations] = useState<
-    { region: string; district: string }[]
-  >([]);
+  const [selectedMajor, setSelectedMajor] = useState<{
+    category: string | null;
+    majorName: string | null;
+  }>({ category: null, majorName: null });
+  const [selectedLocation, setSelectedLocation] = useState<{
+    sd: string | null;
+    sgg: string | null;
+  }>({ sd: null, sgg: null });
 
   // 버튼 위치 참조
   const majorButtonRef = useRef<HTMLButtonElement>(null);
@@ -492,39 +498,30 @@ export default function HeroSection({
 
   // 전공 선택 함수
   const handleMajorSelect = (major: string) => {
-    if (selectedMajors.includes(major)) {
-      setSelectedMajors(selectedMajors.filter((item) => item !== major));
-    } else {
-      setSelectedMajors([...selectedMajors, major]);
-    }
+    const newMajor = { category: selectedCategory, majorName: major };
+    setSelectedMajor(newMajor);
+    const newFilter = {
+      ...filter,
+      category: selectedCategory || "",
+      majorName: major,
+    };
+    console.log("전공 선택 - 새 필터:", newFilter);
+    setFilter(newFilter);
+    setActiveDropdown(null);
   };
 
   // 지역 선택 함수
   const handleLocationSelect = (region: string, district: string) => {
-    const existingLocation = selectedLocations.find(
-      (loc) => loc.region === region && loc.district === district
-    );
-
-    if (existingLocation) {
-      setSelectedLocations(
-        selectedLocations.filter(
-          (loc) => !(loc.region === region && loc.district === district)
-        )
-      );
-    } else {
-      setSelectedLocations([...selectedLocations, { region, district }]);
-    }
-  };
-
-  // 필터 적용 함수
-  const applyFilters = () => {
+    const newLocation = { sd: region, sgg: district };
+    setSelectedLocation(newLocation);
+    const newFilter = {
+      ...filter,
+      sd: region,
+      sgg: district,
+    };
+    console.log("지역 선택 - 새 필터:", newFilter);
+    setFilter(newFilter);
     setActiveDropdown(null);
-    setFilter({
-      sd: "서울",
-      sgg: "강남구",
-      category: "",
-      majorName: "",
-    });
   };
 
   // 드롭다운 렌더링 함수
@@ -533,7 +530,7 @@ export default function HeroSection({
 
     let dropdownContent = null;
     let buttonRect = null;
-    const dropdownWidth = 240; // 기본 드롭다운 너비
+    const dropdownWidth = 240;
 
     if (activeDropdown === "major") {
       buttonRect = majorButtonRect;
@@ -565,19 +562,11 @@ export default function HeroSection({
                 }}
               >
                 <span>{item}</span>
-                {selectedMajors.includes(item) && (
+                {selectedMajor.majorName === item && (
                   <Check className="h-4 w-4 text-emerald-700 dark:text-[#a7d7c5]" />
                 )}
               </button>
             ))}
-          </div>
-          <div className="border-t border-gray-100 dark:border-gray-700 p-2 flex justify-end">
-            <button
-              className="px-3 py-1.5 bg-emerald-700 dark:bg-[#a7d7c5] text-white dark:text-black text-xs rounded-md hover:bg-emerald-600 dark:hover:bg-[#8fcbb6] transition-colors"
-              onClick={applyFilters}
-            >
-              필터 적용
-            </button>
           </div>
         </>
       ) : (
@@ -627,22 +616,12 @@ export default function HeroSection({
                   }}
                 >
                   <span>{district}</span>
-                  {selectedLocations.some(
-                    (loc) =>
-                      loc.region === selectedRegion && loc.district === district
-                  ) && (
-                    <Check className="h-4 w-4 text-emerald-700 dark:text-[#a7d7c5]" />
-                  )}
+                  {selectedLocation.sd === selectedRegion &&
+                    selectedLocation.sgg === district && (
+                      <Check className="h-4 w-4 text-emerald-700 dark:text-[#a7d7c5]" />
+                    )}
                 </button>
               ))}
-          </div>
-          <div className="border-t border-gray-100 dark:border-gray-700 p-2 flex justify-end">
-            <button
-              className="px-3 py-1.5 bg-emerald-700 dark:bg-[#a7d7c5] text-white dark:text-black text-xs rounded-md hover:bg-emerald-600 dark:hover:bg-[#8fcbb6] transition-colors"
-              onClick={applyFilters}
-            >
-              필터 적용
-            </button>
           </div>
         </>
       ) : (

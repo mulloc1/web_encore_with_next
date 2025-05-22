@@ -30,14 +30,6 @@ async function fetchJobs({ page, filter }: { page: number; filter: Filter }) {
     }
 
     const data = await response.json();
-    // return (
-    //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-8">
-    //     {data.map((job: any) => (
-    //       <JobCard key={job.id} job={job} />
-    //     ))}
-    //   </div>
-    // );
-    // console.log(data);
     return data;
   } catch (error) {
     console.error("데이터 불러오기 오류:", error);
@@ -55,39 +47,58 @@ export default function JobGrid({
   setPage: (page: number) => void;
 }) {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchJobs({ page, filter }).then((jobs) => {
-      console.log("전체 데이터:", jobs);
-      setJobs((_) => [...jobs]);
-    });
-  }, [page]);
+    const loadJobs = async () => {
+      setIsLoading(true);
+      try {
+        const newJobs = await fetchJobs({ page, filter });
+        console.log("필터:", filter);
+        console.log("전체 데이터:", newJobs);
+        setJobs(newJobs);
+      } catch (error) {
+        console.error("데이터 로딩 에러:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadJobs();
+  }, [page, filter]); // filter를 의존성 배열에 추가
 
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 py-8">
-        {jobs.map((job) => (
-          <JobCard key={job.id} {...job} />
-        ))}
+        {isLoading ? (
+          // 로딩 중일 때 스켈레톤 UI 표시
+          Array.from({ length: 8 }).map((_, index) => (
+            <JobCardSkeleton key={index} />
+          ))
+        ) : jobs.length > 0 ? (
+          // 데이터가 있을 때
+          jobs.map((job) => <JobCard key={job.id} {...job} />)
+        ) : (
+          // 데이터가 없을 때
+          <div className="col-span-full text-center py-8 text-gray-500">
+            검색 결과가 없습니다.
+          </div>
+        )}
       </div>
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center gap-4 mt-8">
         <Button
           variant="outline"
           size="lg"
-          onClick={() => {
-            setPage(page - 1); // 그 다음 페이지 값 증가
-            console.log(page); // 현재 페이지 값 먼저 출력
-          }}
+          onClick={() => setPage(page - 1)}
+          disabled={page === 0 || isLoading}
         >
           이전
         </Button>
         <Button
           variant="outline"
           size="lg"
-          onClick={() => {
-            setPage(page + 1); // 그 다음 페이지 값 증가
-            console.log(page); // 현재 페이지 값 먼저 출력
-          }}
+          onClick={() => setPage(page + 1)}
+          disabled={jobs.length === 0 || isLoading}
         >
           다음
         </Button>

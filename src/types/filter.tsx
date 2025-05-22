@@ -1,6 +1,6 @@
 interface Filter {
-  sd: string;
-  sgg: string;
   category: string;
   majorName: string;
+  sd: string;
+  sgg: string;
 }
