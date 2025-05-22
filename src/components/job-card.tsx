@@ -18,6 +18,8 @@ export default function JobCard({
   schedule,
   isSubstitude,
   isPlayedOnce,
+  major,
+  locale,
 }: Job) {
   // Format the upload date
   const formatDate = (dateString: string) => {
@@ -38,8 +40,10 @@ export default function JobCard({
   };
 
   return (
-    <div
-      key={id} // 각 JobCard 컴포넌트에 고유한 key prop 추가
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
       className="card-emerald flex flex-col h-full transform hover:scale-105 hover:-translate-y-1 cursor-pointer relative animate-in fade-in slide-in-from-bottom-4 duration-500"
     >
       {/* {isSubstitude && (
@@ -66,7 +70,12 @@ export default function JobCard({
           <div className="flex items-start text-xs">
             <MapPin className="h-3.5 w-3.5 text-emerald-700 dark:text-[#a7d7c5] mr-1.5 mt-0.5 flex-shrink-0" />
             <span className="text-gray-700 dark:text-gray-300 font-card">
-              장소 추가 예정
+              {locale.map((loc, index) => (
+                <span key={index}>
+                  {loc.sd} {loc.sgg}
+                  {index < locale.length - 1 ? ", " : ""}
+                </span>
+              ))}
             </span>
           </div>
 
@@ -103,6 +112,6 @@ export default function JobCard({
           </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }

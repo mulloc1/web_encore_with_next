@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
-
 // 전공 데이터
 const majorCategories = {
   건반악기: [
@@ -413,9 +412,13 @@ const locationData = [
   },
 ];
 
-export default function HeroSection() {
+export default function HeroSection({
+  setFilter,
+}: {
+  setFilter: (filter: Filter) => void;
+}) {
   const [activeDropdown, setActiveDropdown] = useState<
-    "major" | "location" | "help" | null
+    "major" | "location" | null
   >(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -475,7 +478,7 @@ export default function HeroSection() {
   }, []);
 
   // 드롭다운 토글 함수
-  const toggleDropdown = (dropdown: "major" | "location" | "help") => {
+  const toggleDropdown = (dropdown: "major" | "location") => {
     if (activeDropdown === dropdown) {
       setActiveDropdown(null);
       setSelectedCategory(null);
@@ -515,10 +518,13 @@ export default function HeroSection() {
 
   // 필터 적용 함수
   const applyFilters = () => {
-    console.log("선택된 전공:", selectedMajors);
-    console.log("선택된 지역:", selectedLocations);
     setActiveDropdown(null);
-    // 여기에 필터 적용 로직 추가
+    setFilter({
+      sd: "서울",
+      sgg: "강남구",
+      category: "",
+      majorName: "",
+    });
   };
 
   // 드롭다운 렌더링 함수
@@ -794,7 +800,7 @@ export default function HeroSection() {
               </button>
             </div>
 
-            {/* ENCORE? 버튼
+            {/* ENCORE? 버튼 footer에 동일한 기능을 하는 버튼이 존재해서 주석처리함
             <div className="relative">
               <button
                 ref={helpButtonRef}

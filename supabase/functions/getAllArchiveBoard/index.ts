@@ -8,6 +8,12 @@ import { createClient } from "jsr:@supabase/supabase-js";
 
 console.log("getAllArchiveBoard");
 
+const header = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_ORIGIN") ||
+    "*",
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", {
@@ -21,10 +27,18 @@ Deno.serve(async (req) => {
     });
   }
   let page: number;
+  let sd: string;
+  let sgg: string;
+  let category: string;
+  let majorName: string;
 
   try {
     const url = new URL(req.url);
     page = parseInt(url.searchParams.get("page") || "0");
+    sd = url.searchParams.get("sd") || "";
+    sgg = url.searchParams.get("sgg") || "";
+    category = url.searchParams.get("category") || "";
+    majorName = url.searchParams.get("majorName") || "";
   } catch (error) {
     console.error("데이터 불러오기 오류:", error);
     return new Response(
@@ -33,27 +47,52 @@ Deno.serve(async (req) => {
     );
   }
 
+  // sd ,sgg, category, majorName
+
   try {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
     );
 
-    const { data, error } = await supabaseClient.from("archiveBoard").select(
-      "*",
-    ).order("createdAt", { ascending: false })
+    let query = supabaseClient.from("archiveBoard")
+      .select(`
+        *,
+        major!inner(category, majorName),
+        locale!inner(sd, sgg)
+      `);
+    if (sd != "") {
+      query = query.eq("locale.sd", sd);
+      if (sgg != "") {
+        query = query.eq("locale.sgg", sgg);
+      }
+    }
+    if (category != "") {
+      query = query.eq("major.category", category);
+      if (majorName != "") {
+        query = query.eq("major.majorName", majorName);
+      }
+    }
+    const { data, error } = await query
+      .order("createdAt", { ascending: false })
       .range(page * 8, ((page + 1) * 8) - 1);
 
     console.log(data);
 
+    if (error) {
+      console.error("데이터 불러오기 오류:", error);
+      return new Response(
+        JSON.stringify({ error: "데이터를 불러오는데 실패했습니다" }),
+        {
+          headers: header,
+        },
+      );
+    }
+
     return new Response(
       JSON.stringify(data),
       {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_ORIGIN") ||
-            "*",
-        },
+        headers: header,
       },
     );
   } catch (error) {
@@ -61,11 +100,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ error: "데이터를 불러오는데 실패했습니다" }),
       {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_ORIGIN") ||
-            "*",
-        },
+        headers: header,
       },
     );
   }

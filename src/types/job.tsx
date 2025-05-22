@@ -10,4 +10,16 @@ interface Job {
   schedule: string;
   isSubstitude: boolean;
   isPlayedOnce: boolean;
+  major: Major[];
+  locale: Locale[];
+}
+
+interface Major {
+  category: string;
+  majorName: string;
+}
+
+interface Locale {
+  sd: string;
+  sgg: string;
 }

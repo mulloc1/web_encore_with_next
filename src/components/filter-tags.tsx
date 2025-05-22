@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { X } from "lucide-react"
-import { useState } from "react"
+import { X } from "lucide-react";
+import { useState } from "react";
 
 export default function FilterTags() {
   // Sample active filters
@@ -10,16 +10,16 @@ export default function FilterTags() {
     { id: 2, label: "피아노", type: "major" },
     { id: 3, label: "서울시", type: "location" },
     { id: 4, label: "강남구", type: "location" },
-  ]
+  ];
 
   // 호버 상태 관리
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   // 필터 제거 함수
   const removeFilter = (id: number) => {
-    console.log(`필터 제거: ${id}`)
+    console.log(`필터 제거: ${id}`);
     // 실제 구현에서는 필터 상태를 업데이트하는 로직 추가
-  }
+  };
 
   return (
     <div className="py-4 overflow-x-auto">
@@ -49,5 +49,5 @@ export default function FilterTags() {
         ))}
       </div>
     </div>
-  )
+  );
 }

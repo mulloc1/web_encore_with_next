@@ -4,9 +4,8 @@ import JobCard from "./job-card";
 import JobCardSkeleton from "./job-card-skeleton";
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { ChevronDown } from "lucide-react";
 
-async function fetchJobs({ page }: { page: number }) {
+async function fetchJobs({ page, filter }: { page: number; filter: Filter }) {
   try {
     // 환경 변수가 없을 경우를 대비한 체크
     if (
@@ -17,7 +16,7 @@ async function fetchJobs({ page }: { page: number }) {
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/getAllArchiveBoard?page=${page}`,
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/getAllArchiveBoard?page=${page}&sd=${filter.sd}&sgg=${filter.sgg}&category=${filter.category}&majorName=${filter.majorName}`,
       {
         headers: {
           apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -38,6 +37,7 @@ async function fetchJobs({ page }: { page: number }) {
     //     ))}
     //   </div>
     // );
+    // console.log(data);
     return data;
   } catch (error) {
     console.error("데이터 불러오기 오류:", error);
@@ -45,13 +45,20 @@ async function fetchJobs({ page }: { page: number }) {
   }
 }
 
-export default function JobGrid() {
-  const [page, setPage] = useState(0);
+export default function JobGrid({
+  filter,
+  page,
+  setPage,
+}: {
+  filter: Filter;
+  page: number;
+  setPage: (page: number) => void;
+}) {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    fetchJobs({ page }).then((jobs) => {
-      console.log(jobs);
+    fetchJobs({ page, filter }).then((jobs) => {
+      console.log("전체 데이터:", jobs);
       setJobs((_) => [...jobs]);
     });
   }, [page]);
